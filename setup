@@ -2,6 +2,15 @@
 
 echo "Setting up server"
 
+# First remove cdrom as a source
+# Check the main sources.list file for CD-ROM entries
+sudo sed -i '/^deb cdrom:/d' /etc/apt/sources.list
+
+# Check additional sources.list files in the sources.list.d directory
+sudo find /etc/apt/sources.list.d -type f -name "*.list" -exec sed -i '/^deb cdrom:/d' {} +
+
+
+
 apt update && apt upgrade
 
 echo "Making USB Tethering more reliable"
@@ -9,6 +18,8 @@ apt install network-manager dialog
 
 # remove phone interface so no longer handled by ifupdown
 rm /etc/network/interfaces.d/phone
+
+
 
 dialog --msgbox "Please disconnect and reconnect your phone via USB then enable Tethering:\n\nSettings -> Connections -> Mobile Hotspot and Tethering -> Enable USB Tethering\n\nPress Enter when finished" 20 85
 

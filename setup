@@ -1,8 +1,18 @@
 #!/bin/bash
 
 echo "Setting up server"
+
 apt update && apt upgrade
-apt install sudo
+
+echo "Making USB Tethering more reliable"
+apt install network-manager dialog
+
+# remove phone interface so no longer handled by ifupdown
+rm /etc/network/interfaces.d/phone
+
+dialog --msgbox "Please disconnect and reconnect your phone via USB then enable Tethering:\n\nSettings -> Connections -> Mobile Hotspot and Tethering -> Enable USB Tethering\n\nPress Enter when finished" 20 85
+
+apt install sudo dialog
 usermod -a -G sudo user
 
 # Get packages

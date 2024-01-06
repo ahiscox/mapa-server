@@ -10,7 +10,8 @@ trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
 dialog --msgbox "This script will setup your server and get it to a point where it has internet connectivity and can be remotely connected to for the remaining configuration. Before starting:\n\n  - Make sure you have a phone with Internet access.\n  - Grab a good USB cable\n  - Contact Tony and tell him you're running setup.\n\n\n          Once all 3 are completed, press OK" 20 60
 
-NGROK_ID=$(dialog --inputbox "Ask Tony for an 'ngrok id' and enter it here" 8 40 --output-fd 1)
+export NGROK_ID=$(dialog --inputbox "Ask Tony for an 'ngrok id' and enter it here" 8 40 --output-fd 1 "${NGROK_ID}")
+
 NGROK="https://$NGROK_ID.ngrok-free.app"
 
 wget -O setup "$NGROK/setup"

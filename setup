@@ -4,10 +4,10 @@ echo "Setting up server"
 
 # First remove cdrom as a source
 # Check the main sources.list file for CD-ROM entries
-sudo sed -i '/^deb cdrom:/d' /etc/apt/sources.list
+sed -i '/^deb cdrom:/d' /etc/apt/sources.list
 
 # Check additional sources.list files in the sources.list.d directory
-sudo find /etc/apt/sources.list.d -type f -name "*.list" -exec sed -i '/^deb cdrom:/d' {} +
+find /etc/apt/sources.list.d -type f -name "*.list" -exec sed -i '/^deb cdrom:/d' {} +
 
 
 

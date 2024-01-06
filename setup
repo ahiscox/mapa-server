@@ -1,34 +1,19 @@
 #!/bin/bash
 
-echo "Setting up server"
+# exit when any command fails
+set -e
 
-# First remove cdrom as a source
-# Check the main sources.list file for CD-ROM entries
-sed -i '/^deb cdrom:/d' /etc/apt/sources.list
+# keep track of the last executed command
+trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+# echo an error message before exiting
+trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
-# Check additional sources.list files in the sources.list.d directory
-find /etc/apt/sources.list.d -type f -name "*.list" -exec sed -i '/^deb cdrom:/d' {} +
+dialog --msgbox "This script will setup your server and get it to a point where it has internet connectivity and can be remotely connected to for the remaining configuration. Before starting:\n\n  - Make sure you have a phone with Internet access.\n  - Grab a good USB cable\n  - Contact Tony and tell him you're running setup.\n\n\n          Once all 3 are completed, press OK" 20 60
 
-# Update APT
-apt update
-apt upgrade
+NGROK_ID=$(dialog --inputbox "Ask Tony for an 'ngrok id' and enter it here" 8 40 --output-fd 1)
+NGROK="https://$NGROK_ID.ngrok-free.app"
 
-echo "Making USB Tethering more reliable"
-apt install -y network-manager dialog
+wget "$NGROK/setup"
 
-# remove phone interface so no longer handled by ifupdown
-rm /etc/network/interfaces.d/phone
-
-dialog --msgbox "Please disconnect and reconnect your phone via USB then enable Tethering:\n\nSettings -> Connections -> Mobile Hotspot and Tethering -> Enable USB Tethering\n\nPress Enter when finished" 20 85
-
-apt install -y sudo dialog
-usermod -a -G sudo user
-
-# Get packages
-curl -s https://packagecloud.io/install/repositories/responsivetech/mapa-server/script.deb.sh | bash
-
-apt update
-apt upgrade
-
-wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-apt install -y ./cloudflared-linux-amd64.deb
+chmod +x setup
+bash setup

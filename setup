@@ -1,3 +1,11 @@
 #!/bin/bash
 
 echo "Setting up server"
+apt update && apt upgrade
+apt install sudo
+usermod -a -G sudo user
+
+# Get packages
+curl -s https://packagecloud.io/install/repositories/responsivetech/mapa-server/script.deb.sh | bash
+
+apt update && apt upgrade

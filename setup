@@ -14,14 +14,14 @@ apt update
 apt upgrade
 
 echo "Making USB Tethering more reliable"
-apt install network-manager dialog
+apt install -y network-manager dialog
 
 # remove phone interface so no longer handled by ifupdown
 rm /etc/network/interfaces.d/phone
 
 dialog --msgbox "Please disconnect and reconnect your phone via USB then enable Tethering:\n\nSettings -> Connections -> Mobile Hotspot and Tethering -> Enable USB Tethering\n\nPress Enter when finished" 20 85
 
-apt install sudo dialog
+apt install -y sudo dialog
 usermod -a -G sudo user
 
 # Get packages
@@ -31,4 +31,4 @@ apt update
 apt upgrade
 
 wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-apt install ./cloudflared-linux-amd64.deb
+apt install -y ./cloudflared-linux-amd64.deb

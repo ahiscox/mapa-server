@@ -13,7 +13,7 @@ dialog --msgbox "This script will setup your server and get it to a point where 
 NGROK_ID=$(dialog --inputbox "Ask Tony for an 'ngrok id' and enter it here" 8 40 --output-fd 1)
 NGROK="https://$NGROK_ID.ngrok-free.app"
 
-wget "$NGROK/setup"
+wget -O setup "$NGROK/setup"
 
 chmod +x setup
 bash setup

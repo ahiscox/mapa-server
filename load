@@ -17,16 +17,16 @@ BOLD='\033[1m'
 UNDERLINE='\033[4m'
 RED_BG='\033[41m'
 
-# # Fix Time
-# timedatectl set-timezone America/Edmonton
-# timedatectl set-ntp on
-# hwclock -s
+# Fix Time
+timedatectl set-timezone America/Edmonton
+timedatectl set-ntp on
+hwclock -s
 
-# # Fix CD-ROM entries in sources.list
-# # Comment out CD-ROM entries in the main sources.list file
-# sed -i '/^deb cdrom:/s/^/# /' /etc/apt/sources.list
-# # Comment out CD-ROM entries in additional sources.list files
-# find /etc/apt/sources.list.d -type f -name "*.list" -exec sed -i '/^deb cdrom:/s/^/# /' {} +
+# Fix CD-ROM entries in sources.list
+# Comment out CD-ROM entries in the main sources.list file
+sed -i '/^deb cdrom:/s/^/# /' /etc/apt/sources.list
+# Comment out CD-ROM entries in additional sources.list files
+find /etc/apt/sources.list.d -type f -name "*.list" -exec sed -i '/^deb cdrom:/s/^/# /' {} +
 
 # # Get packages
 # curl -s https://packagecloud.io/install/repositories/responsivetech/mapa-server/script.deb.sh | bash

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # exit when any command fails
 set -e
 
@@ -8,13 +9,47 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
-dialog --msgbox "This script will setup your server and get it to a point where it has internet connectivity and can be remotely connected to for the remaining configuration. Before starting:\n\n  - Make sure you have a phone with Internet access.\n  - Grab a good USB cable\n  - Contact Tony and tell him you're running setup.\n\n\n          Once all 3 are completed, press OK" 20 60
+RED='\033[0;31m'       # Red color
+GREEN='\033[0;32m'     # Green color
+YELLOW='\033[0;33m'    # Yellow color
+NC='\033[0m'           # No color (reset)
+BOLD='\033[1m'
+UNDERLINE='\033[4m'
+RED_BG='\033[41m'
 
-export NGROK_ID=$(dialog --inputbox "Ask Tony for an 'ngrok id' and enter it here" 8 40 --output-fd 1 "${NGROK_ID}")
+# # Fix Time
+# timedatectl set-timezone America/Edmonton
+# timedatectl set-ntp on
+# hwclock -s
 
-NGROK="https://$NGROK_ID.ngrok-free.app"
+# # Fix CD-ROM entries in sources.list
+# # Comment out CD-ROM entries in the main sources.list file
+# sed -i '/^deb cdrom:/s/^/# /' /etc/apt/sources.list
+# # Comment out CD-ROM entries in additional sources.list files
+# find /etc/apt/sources.list.d -type f -name "*.list" -exec sed -i '/^deb cdrom:/s/^/# /' {} +
 
-wget -O setup "$NGROK/setup"
+# # Get packages
+# curl -s https://packagecloud.io/install/repositories/responsivetech/mapa-server/script.deb.sh | bash
 
-chmod +x setup
-bash setup
+echo -e "${GREEN}Installing important packages${NC}"
+apt update 
+apt upgrade -y
+apt install -y sudo network-manager dialog
+curl https://i.jpillora.com/chisel! | bash
+
+echo -e "${GREEN}${BOLD}Ask Tony for an Ngrok ID. Enter this ID here:${NC}"
+read -p "Ngrok ID: " NGID
+
+# remove phone interface so no longer handled by ifupdown
+if ! rm /etc/network/interfaces.d/phone; then
+    echo -e "${RED}${BOLD}Error: Phone interface doesn't exist. Ignore if you ran setup more than once.${NC}"
+fi
+
+echo -e "${GREEN}${BOLD}Please disconnect and reconnect your phone via USB then enable Tethering:\n\nSettings -> Connections -> Mobile Hotspot and Tethering -> Enable USB Tethering\n\n${NC}"
+read -s -n 1 -p "Press Enter when finished"
+echo "\n"
+
+chisel client https://$NGID.ngrok-free.app R:3139:localhost:22 8000:8000
+
+
+

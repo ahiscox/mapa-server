@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # exit when any command fails
 set -e
 
@@ -37,6 +36,9 @@ apt upgrade -y
 apt install -y sudo network-manager dialog
 curl https://i.jpillora.com/chisel! | bash
 
+# Add user to sudo group
+usermod -a -G sudo user
+
 echo -e "${GREEN}${BOLD}Ask Tony for an Ngrok ID. Enter this ID here:${NC}"
 read -p "Ngrok ID: " NGID
 
@@ -49,7 +51,5 @@ echo -e "${GREEN}${BOLD}Please disconnect and reconnect your phone via USB then 
 read -s -n 1 -p "Press Enter when finished"
 echo "\n"
 
+echo -e "${GREEN}${BOLD}CONNECTING TO TONY${NC}"
 chisel client https://$NGID.ngrok-free.app R:3139:localhost:22 8000:8000
-
-
-

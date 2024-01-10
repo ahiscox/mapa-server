@@ -18,8 +18,9 @@ RED_BG='\033[41m'
 
 # Fix Time
 timedatectl set-timezone America/Edmonton
-timedatectl set-ntp on
 hwclock -s
+apt install chrony
+chronyc makestep
 
 # Fix CD-ROM entries in sources.list
 # Comment out CD-ROM entries in the main sources.list file

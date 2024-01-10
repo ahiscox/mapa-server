@@ -42,6 +42,7 @@ usermod -a -G sudo user
 
 echo -e "${GREEN}${BOLD}Ask Tony for an Ngrok ID. Enter this ID here:${NC}"
 read -p "Ngrok ID: " NGID
+export NGID
 
 # remove phone interface so no longer handled by ifupdown
 if ! rm /etc/network/interfaces.d/phone; then
